@@ -17,10 +17,10 @@ namespace SalesWeb.Controllers
 
         public IActionResult About()
         {
-            ViewData["Message"] = "Your application description page.";
-
+            ViewData["Message"] = "Salles web MVC App from C# course";
+            ViewData["Aluno"] = "Allan Souza Silva";
             return View();
-        }
+        }   
 
         public IActionResult Contact()
         {
