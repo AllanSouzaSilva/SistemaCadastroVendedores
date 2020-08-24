@@ -4,9 +4,9 @@ using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
-using SalesWeb.Models.ViewModels;
+using SalesWebMvc.Models.ViewModels;
 
-namespace SalesWeb.Controllers
+namespace SalesWebMvc.Controllers
 {
     public class HomeController : Controller
     {
