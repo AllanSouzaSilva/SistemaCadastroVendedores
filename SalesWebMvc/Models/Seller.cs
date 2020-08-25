@@ -14,13 +14,13 @@ namespace SalesWebMvc.Models
         public ICollection<SalesRecord> Sales { get; set; } = new List<SalesRecord>();
         public Seller() { }
 
-        public Seller(int id, string name, string email, double baseSalary, DateTime birtDate, Department department)
+        public Seller(int id, string name, string email, DateTime birtDate, double baseSalary, Department department)
         {
             Id = id;
             Name = name;
             Email = email;
-            BaseSalary = baseSalary;
             BirtDate = birtDate;
+            BaseSalary = baseSalary;
             Department = department;
         }
 
