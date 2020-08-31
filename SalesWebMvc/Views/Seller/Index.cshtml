@@ -1,8 +1,52 @@
-﻿
+﻿<!--Objeto model que vai conrresponder a lista de view -->
 @{
-    ViewData["Title"] = "Index";
+    @model IEnumerable<SalesWebMvc.Models.Seller>
+    ViewData["Title"] = "Seller";
 }
 
-<h2>Sellers</h2>
-<p>Sellers index pega</p>
-
+<h2>@ViewData["Title"]</h2>
+<table class="table table-striped table-hover">
+    <thead>
+        <tr class="success">
+            <th>
+                @Html.DisplayNameFor(model => model.Name)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.Email)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BirtDate)
+            </th>
+            <th>
+                @Html.DisplayNameFor(model => model.BaseSalary)
+            </th>
+            <th
+        </tr>
+    </thead>
+    <tbody>
+        <!-- Corpo da tabela -->
+        @foreach (var item in Model)
+        {
+            <tr>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Name)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Email)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BirtDate)
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.BaseSalary)
+                </td>
+                <td>
+                    <a asp-action="Edit" asp-route-id="@item.Id">Edit</a>
+                    <a asp-action="Details" asp-route-id="@item.Id">Details</a>
+                    <a asp-action="Delete" asp-route-id="@item.Id">Delete</a>
+                </td>
+            </tr>
+        }
+    </tbody>
+</table>
+<!-- Codigo para obter os dados e mostrar na tela -->
