@@ -19,9 +19,8 @@ namespace SalesWebMvc.Services
         {
             return _context.Seller.ToList(); //Para retornar uma lista de vendedores
         }
-        public void Insert(Seller obj)
+        public void Insert(Seller obj) // Irá inserir um vendedor com novo cadastro no banco de dados
         {
-            obj.Department = _context.Department.First();
             _context.Add(obj);
             _context.SaveChanges();
         }
