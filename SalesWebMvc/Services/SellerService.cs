@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Microsoft.EntityFrameworkCore;
 using SalesWebMvc.Data;
 using SalesWebMvc.Models;
 namespace SalesWebMvc.Services
@@ -24,5 +25,18 @@ namespace SalesWebMvc.Services
             _context.Add(obj);
             _context.SaveChanges();
         }
+
+        public Seller FindById(int id) // Vai receber um int ID e vai retornar um vendedor que possui esse ID. Se o vend não existir ele vai retornar null
+        {
+            return _context.Seller.FirstOrDefault(obj => obj.Id == id);
+        }
+
+        public void Remove(int id)
+        {
+            var obj = _context.Seller.Find(id);
+            _context.Seller.Remove(obj);//Para remover o objeto do dbset 
+            _context.SaveChanges();//Para o Entity frameword efetivala a remoção do vendedor lá no banco.
+        }
+
     }
 }

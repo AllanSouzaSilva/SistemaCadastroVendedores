@@ -19,7 +19,7 @@ namespace SalesWebMvc.Controllers
         {
             //Construtor com injeção de depedencia
             _sellerService = sellerService;
-            _departmentService = departmentService; 
+            _departmentService = departmentService;
         }
         public IActionResult Index()
         {
@@ -41,6 +41,29 @@ namespace SalesWebMvc.Controllers
         {
             _sellerService.Insert(seller);//Um parametro para inserir o vendedor no metodo que esta no seller service
             return RedirectToAction(nameof(Index)); //Assim que recarregar a pagina esse return vai redireciona para a Index(Tela Principal)
+        }
+
+        public IActionResult Delete(int? id)
+        {
+            //Primeiro testa se o id é null
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value); // fazendo busca no banco de dados
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            return View(obj);
+        }
+    
+        [HttpPost]
+        [AutoValidateAntiforgeryToken]
+        public IActionResult Delete(int id)
+        {
+            _sellerService.Remove(id);
+            return RedirectToAction(nameof(Index));
         }
     }
 }

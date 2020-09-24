@@ -1,0 +1,54 @@
+﻿@model SalesWebMvc.Models.Seller
+
+@{
+    ViewData["Title"] = "Delete";
+}
+
+<h2>@ViewData["Title"]</h2>
+
+<h3>Are your sure you want to delete this?</h3>
+<div>
+    <h4>Seller</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <!--Para listar os campos do nosso objeto-->
+        <dt>
+            <!--Para mostrar o nome do campo -->
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            <!-- Para mostrar o valor do campo -->
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            <!--Para mostrar o nome do campo -->
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            <!-- Para mostrar o valor do campo -->
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            <!--Para mostrar o nome do campo -->
+            @Html.DisplayNameFor(model => model.BirtDate)
+        </dt>
+        <dd>
+            <!-- Para mostrar o valor do campo -->
+            @Html.DisplayFor(model => model.BirtDate)
+        </dd>
+        <dt>
+            <!--Para mostrar o nome do campo -->
+            @Html.DisplayNameFor(model => model.BaseSalary)
+        </dt>
+        <dd>
+            <!-- Para mostrar o valor do campo -->
+            @Html.DisplayFor(model => model.BaseSalary)
+        </dd>
+    </dl>
+        <form asp-action="Delete">
+            <input type="hidden" asp-for="Id"/>
+            <input type="submit" value="Delete" class="btn btn-danger"/>
+            <a asp-action="Index">Back to List</a>
+        </form>
+</div>
+
