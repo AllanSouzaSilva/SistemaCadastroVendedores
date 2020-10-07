@@ -4,7 +4,9 @@ using SalesWebMvc.Models;
 using SalesWebMvc.Models.ViewModels;
 using SalesWebMvc.Services;
 using SalesWebMvc.Services.Exceptions;
+using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 
 namespace SalesWebMvc.Controllers
 {
@@ -46,16 +48,16 @@ namespace SalesWebMvc.Controllers
             //Primeiro testa se o id é null
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided"});
             }
             var obj = _sellerService.FindById(id.Value); // fazendo busca no banco de dados caso não encontrar vou retornar um not found
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
             return View(obj);
         }
-
+        //Versão post
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public IActionResult Delete(int id)
@@ -70,12 +72,12 @@ namespace SalesWebMvc.Controllers
             //Primeiro testa se o id é null
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
             var obj = _sellerService.FindById(id.Value); // fazendo busca no banco de dados caso não encontrar vou retornar um not found
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
             return View(obj);
         }
@@ -84,13 +86,13 @@ namespace SalesWebMvc.Controllers
             //Testando se o Id existe
             if (id == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
             // testar para ver se o Id  existe no banco de dados ou é nullo
             var obj = _sellerService.FindById(id.Value);
             if (obj == null)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
             //Abrir a tela de edição e povuar a caixa de seleção do departamento
             List<Department> departments =  _departmentService.FindAll();
@@ -98,7 +100,7 @@ namespace SalesWebMvc.Controllers
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
             return View(viewModel);
         }
-        //Ação edit com metodo post
+        //Ação edit com metodo post 
         [HttpPost]
         [ValidateAntiForgeryToken]
         //O Id da url que esta chegando tem que ser igual ao do vendedor que estou passando no metodo
@@ -107,22 +109,30 @@ namespace SalesWebMvc.Controllers
             //testando se o id do vendedor que esta chegando no metodo for diferente do seller.Id alguma coisa esta errada.
             if (id != seller.Id)
             {
-                return BadRequest();
+                return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
             }
             try { 
             _sellerService.Update(seller);
             // Redirecionar para a pagina Index
             return RedirectToAction(nameof(Index));
             }
-            catch (NotFoundException)
+            catch (ApplicationException e)
             {
-                return NotFound();
+                return RedirectToAction(nameof(Error), new { message = e.Message });
             }
-            catch (DbConcurrencyException)
-            {
-                return BadRequest();
-            }
+            
         }
+        public IActionResult Error(string message)
+        {
+            var viewModel = new ErrorViewModel
+            {
+                //O atributo dele vai ser a mensagem que esse metodo vai receber
+                Message = message,
+                //Um macete para pegar o id interno da requisição ?? Operador de colsença nula
+                RequestId = Activity.Current?.Id ?? HttpContext.TraceIdentifier
+            };
 
+            return View(viewModel);
+        }
     }
 }
