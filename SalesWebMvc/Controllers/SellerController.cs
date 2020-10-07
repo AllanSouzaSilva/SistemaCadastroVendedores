@@ -3,6 +3,8 @@ using Microsoft.AspNetCore.Mvc;
 using SalesWebMvc.Models;
 using SalesWebMvc.Models.ViewModels;
 using SalesWebMvc.Services;
+using SalesWebMvc.Services.Exceptions;
+using System.Collections.Generic;
 
 namespace SalesWebMvc.Controllers
 {
@@ -76,6 +78,50 @@ namespace SalesWebMvc.Controllers
                 return NotFound();
             }
             return View(obj);
+        }
+        public IActionResult Edit(int? id)
+        {
+            //Testando se o Id existe
+            if (id == null)
+            {
+                return NotFound();
+            }
+            // testar para ver se o Id  existe no banco de dados ou é nullo
+            var obj = _sellerService.FindById(id.Value);
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            //Abrir a tela de edição e povuar a caixa de seleção do departamento
+            List<Department> departments =  _departmentService.FindAll();
+            //Passando os dados para objeto FormViewModel 
+            SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
+            return View(viewModel);
+        }
+        //Ação edit com metodo post
+        [HttpPost]
+        [ValidateAntiForgeryToken]
+        //O Id da url que esta chegando tem que ser igual ao do vendedor que estou passando no metodo
+        public IActionResult Edit(int id, Seller seller)
+        {
+            //testando se o id do vendedor que esta chegando no metodo for diferente do seller.Id alguma coisa esta errada.
+            if (id != seller.Id)
+            {
+                return BadRequest();
+            }
+            try { 
+            _sellerService.Update(seller);
+            // Redirecionar para a pagina Index
+            return RedirectToAction(nameof(Index));
+            }
+            catch (NotFoundException)
+            {
+                return NotFound();
+            }
+            catch (DbConcurrencyException)
+            {
+                return BadRequest();
+            }
         }
 
     }
