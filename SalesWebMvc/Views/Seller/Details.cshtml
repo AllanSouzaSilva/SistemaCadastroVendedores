@@ -1,0 +1,58 @@
+﻿@model SalesWebMvc.Models.Seller
+@{
+
+    ViewData["Title"] = "Details";
+}
+
+<h2>@ViewData["Title"]</h2>
+<div>
+    <h4>Seller</h4>
+    <hr />
+    <dl class="dl-horizontal">
+        <!--Para listar os campos do nosso objeto-->
+        <dt>
+            <!--Para mostrar o nome do campo -->
+            @Html.DisplayNameFor(model => model.Name)
+        </dt>
+        <dd>
+            <!-- Para mostrar o valor do campo -->
+            @Html.DisplayFor(model => model.Name)
+        </dd>
+        <dt>
+            <!--Para mostrar o nome do campo -->
+            @Html.DisplayNameFor(model => model.Email)
+        </dt>
+        <dd>
+            <!-- Para mostrar o valor do campo -->
+            @Html.DisplayFor(model => model.Email)
+        </dd>
+        <dt>
+            <!--Para mostrar o nome do campo -->
+            @Html.DisplayNameFor(model => model.BirtDate)
+        </dt>
+        <dd>
+            <!-- Para mostrar o valor do campo -->
+            @Html.DisplayFor(model => model.BirtDate)
+        </dd>
+        <dt>
+            <!--Para mostrar o nome do campo -->
+            @Html.DisplayNameFor(model => model.BaseSalary)
+        </dt>
+        <dd>
+            <!-- Para mostrar o valor do campo -->
+            @Html.DisplayFor(model => model.BaseSalary)
+        </dd>
+        <dt>
+            <!--Para mostrar o nome do campo -->
+            @Html.DisplayNameFor(model => model.Department)
+        </dt>
+        <dd>
+            <!-- Para mostrar o valor do campo -->
+            @Html.DisplayFor(model => model.Department.Name)
+        </dd>
+    </dl>
+</div>
+<div>
+    <a asp-action="Edit" asp-route-id="@Model.Id" class="btn btn-default">Edit</a>
+    <a asp-action="Index" class="btn btn-default">Back to list</a>
+</div>

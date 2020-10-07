@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
+﻿
 using Microsoft.AspNetCore.Mvc;
 using SalesWebMvc.Models;
 using SalesWebMvc.Models.ViewModels;
@@ -50,14 +46,14 @@ namespace SalesWebMvc.Controllers
             {
                 return NotFound();
             }
-            var obj = _sellerService.FindById(id.Value); // fazendo busca no banco de dados
+            var obj = _sellerService.FindById(id.Value); // fazendo busca no banco de dados caso não encontrar vou retornar um not found
             if (obj == null)
             {
                 return NotFound();
             }
             return View(obj);
         }
-    
+
         [HttpPost]
         [AutoValidateAntiforgeryToken]
         public IActionResult Delete(int id)
@@ -65,5 +61,22 @@ namespace SalesWebMvc.Controllers
             _sellerService.Remove(id);
             return RedirectToAction(nameof(Index));
         }
+
+        public IActionResult Details(int? id)
+        {
+
+            //Primeiro testa se o id é null
+            if (id == null)
+            {
+                return NotFound();
+            }
+            var obj = _sellerService.FindById(id.Value); // fazendo busca no banco de dados caso não encontrar vou retornar um not found
+            if (obj == null)
+            {
+                return NotFound();
+            }
+            return View(obj);
+        }
+
     }
 }
