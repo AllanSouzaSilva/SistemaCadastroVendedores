@@ -39,6 +39,13 @@ namespace SalesWebMvc.Controllers
         [ValidateAntiForgeryToken] //Para previnir que a aplicação sofra ataques srsf: Quando alguém aproveitaa sessão de autenticaçãoe envia dados maliciososaproveitando a sua autenticação.
         public IActionResult Create(Seller seller)
         {
+            if (!ModelState.IsValid)//Testa pra ver se o modelo foi validado
+            {
+                var departments = _departmentService.FindAll();
+                var ViewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                //Vai retornar pra mesma view enaqunto o usuário não preencher corretamente o formulário
+                return View(ViewModel);
+            }
             _sellerService.Insert(seller);//Um parametro para inserir o vendedor no metodo que esta no seller service
             return RedirectToAction(nameof(Index)); //Assim que recarregar a pagina esse return vai redireciona para a Index(Tela Principal)
         }
@@ -48,7 +55,7 @@ namespace SalesWebMvc.Controllers
             //Primeiro testa se o id é null
             if (id == null)
             {
-                return RedirectToAction(nameof(Error), new { message = "Id not provided"});
+                return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
             var obj = _sellerService.FindById(id.Value); // fazendo busca no banco de dados caso não encontrar vou retornar um not found
             if (obj == null)
@@ -95,7 +102,7 @@ namespace SalesWebMvc.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
             //Abrir a tela de edição e povuar a caixa de seleção do departamento
-            List<Department> departments =  _departmentService.FindAll();
+            List<Department> departments = _departmentService.FindAll();
             //Passando os dados para objeto FormViewModel 
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
             return View(viewModel);
@@ -106,21 +113,29 @@ namespace SalesWebMvc.Controllers
         //O Id da url que esta chegando tem que ser igual ao do vendedor que estou passando no metodo
         public IActionResult Edit(int id, Seller seller)
         {
+            if (!ModelState.IsValid)//Testa pra ver se o modelo foi validado
+            {
+                var departments = _departmentService.FindAll();
+                var ViewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
+                //Vai retornar pra mesma view enaqunto o usuário não preencher corretamente o formulário
+                return View(ViewModel);
+            }
             //testando se o id do vendedor que esta chegando no metodo for diferente do seller.Id alguma coisa esta errada.
             if (id != seller.Id)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id mismatch" });
             }
-            try { 
-            _sellerService.Update(seller);
-            // Redirecionar para a pagina Index
-            return RedirectToAction(nameof(Index));
+            try
+            {
+                _sellerService.Update(seller);
+                // Redirecionar para a pagina Index
+                return RedirectToAction(nameof(Index));
             }
             catch (ApplicationException e)
             {
                 return RedirectToAction(nameof(Error), new { message = e.Message });
             }
-            
+
         }
         public IActionResult Error(string message)
         {
