@@ -1,6 +1,7 @@
 ﻿
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading.Tasks;
 using Microsoft.EntityFrameworkCore;
 using SalesWebMvc.Data;
 using SalesWebMvc.Models;
@@ -17,33 +18,35 @@ namespace SalesWebMvc.Services
         {
             _context = context;
         }
-        public List<Seller> FindAll()
+        public async Task<List<Seller>> FindAllAsync()
         {
-            return _context.Seller.ToList(); //Para retornar uma lista de vendedores
+            return await _context.Seller.ToListAsync(); //Para retornar uma lista de vendedores
         }
-        public void Insert(Seller obj) // Irá inserir um vendedor com novo cadastro no banco de dados
+        public async Task InsertAsync (Seller obj) // Irá inserir um vendedor com novo cadastro no banco de dados
         {
-            _context.Add(obj);
-            _context.SaveChanges();
+            _context.Add(obj); //O Add ele é feita somente em memoria.
+            await _context.SaveChangesAsync(); //SaveChanges é o elemento que vai salvar no banco de dados
         }
 
-        public Seller FindById(int id) // Vai receber um int ID e vai retornar um vendedor que possui esse ID. Se o vend não existir ele vai retornar null
+        public async Task<Seller> FindByIdAsync(int id) // Vai receber um int ID e vai retornar um vendedor que possui esse ID. Se o vend não existir ele vai retornar null
         {
             //Igarload que é carregar outros objetos além do objeto já carregado .
-            return _context.Seller.Include(obj => obj.Department).FirstOrDefault(obj => obj.Id == id);
+            return await _context.Seller.Include(obj => obj.Department).FirstOrDefaultAsync(obj => obj.Id == id);
+            //A operção nesse metodo que esta acessando o banco é o FirstOrDefault
         }
 
-        public void Remove(int id)
+        public async Task RemoveAsync(int id)
         {
-            var obj = _context.Seller.Find(id);
+            var obj = await _context.Seller.FindAsync(id);
             _context.Seller.Remove(obj);//Para remover o objeto do dbset 
-            _context.SaveChanges();//Para o Entity framework efetiva  la a remoção do vendedor lá no banco.
+           await _context.SaveChangesAsync();//Para o Entity framework efetiva  la a remoção do vendedor lá no banco.
         }
-        public void Update(Seller obj)
+        public async Task UpdateAsync(Seller obj)
         {
-         //Testando se o ID do objeto já existe no banco, o Any serve pra falar se existe algum registro na banco de dados com a condição que foi colocada.
-         //Testando se já tem no banco de dados algum vendedor x cujo o id seja igual ao id do obj. 
-            if ( !_context.Seller.Any(x => x.Id == obj.Id))
+            //Testando se o ID do objeto já existe no banco, o Any serve pra falar se existe algum registro na banco de dados com a condição que foi colocada.
+            //Testando se já tem no banco de dados algum vendedor x cujo o id seja igual ao id do obj. 
+            bool hasAny = await _context.Seller.AnyAsync(x => x.Id == obj.Id);
+            if ( !hasAny)
             {
                 //Se não existir (!) Vou retornar uma exception
                 throw new KeyNotFoundException("Not Found");
@@ -54,7 +57,7 @@ namespace SalesWebMvc.Services
 
             { 
                 _context.Update(obj);
-                _context.SaveChanges(); //para salvar no banco
+                await _context.SaveChangesAsync(); //para salvar no banco
             }
             catch (DbUpdateConcurrencyException e){
                 /*Exeção a nivel de serviço para segregar as camadas 

@@ -10,7 +10,7 @@
 </p>
 <table class="table table-striped table-hover">
     <thead>
-        <tr class="success">
+        <tr>
             <th>
                 @Html.DisplayNameFor(model => model.Name)
             </th>
@@ -30,7 +30,7 @@
         <!-- Corpo da tabela -->
         @foreach (var item in Model)
         {
-            <tr>
+            <tr >
                 <td>
                     @Html.DisplayFor(modelItem => item.Name)
                 </td>

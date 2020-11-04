@@ -7,6 +7,7 @@ using SalesWebMvc.Services.Exceptions;
 using System;
 using System.Collections.Generic;
 using System.Diagnostics;
+using System.Threading.Tasks;
 
 namespace SalesWebMvc.Controllers
 {
@@ -21,14 +22,15 @@ namespace SalesWebMvc.Controllers
             _sellerService = sellerService;
             _departmentService = departmentService;
         }
-        public IActionResult Index()
+        public async Task<IActionResult> Index()
         {
-            var list = _sellerService.FindAll();
+            
+            var list = await _sellerService.FindAllAsync();
             return View(list);
         }
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
-            var departments = _departmentService.FindAll();//Buscando a lista de departamento
+            var departments = await _departmentService.FindAllAsync();//Buscando a lista de departamento
             var viewModel = new SellerFormViewModel { Departments = departments };
             /* No Departement está iniciando com uma lista que foi buscada
              * */
@@ -37,27 +39,27 @@ namespace SalesWebMvc.Controllers
 
         [HttpPost] //
         [ValidateAntiForgeryToken] //Para previnir que a aplicação sofra ataques srsf: Quando alguém aproveitaa sessão de autenticaçãoe envia dados maliciososaproveitando a sua autenticação.
-        public IActionResult Create(Seller seller)
+        public async Task<IActionResult> Create(Seller seller)
         {
             if (!ModelState.IsValid)//Testa pra ver se o modelo foi validado
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
                 var ViewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 //Vai retornar pra mesma view enaqunto o usuário não preencher corretamente o formulário
                 return View(ViewModel);
             }
-            _sellerService.Insert(seller);//Um parametro para inserir o vendedor no metodo que esta no seller service
+            await _sellerService.InsertAsync(seller);//Um parametro para inserir o vendedor no metodo que esta no seller service
             return RedirectToAction(nameof(Index)); //Assim que recarregar a pagina esse return vai redireciona para a Index(Tela Principal)
         }
 
-        public IActionResult Delete(int? id)
+        public async Task<IActionResult> Delete(int? id)
         {
             //Primeiro testa se o id é null
             if (id == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
-            var obj = _sellerService.FindById(id.Value); // fazendo busca no banco de dados caso não encontrar vou retornar um not found
+            var obj = await _sellerService.FindByIdAsync(id.Value); // fazendo busca no banco de dados caso não encontrar vou retornar um not found
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
@@ -67,13 +69,13 @@ namespace SalesWebMvc.Controllers
         //Versão post
         [HttpPost]
         [AutoValidateAntiforgeryToken]
-        public IActionResult Delete(int id)
+        public async Task<IActionResult> Delete(int id)
         {
-            _sellerService.Remove(id);
+            await _sellerService.RemoveAsync(id);
             return RedirectToAction(nameof(Index));
         }
 
-        public IActionResult Details(int? id)
+        public async Task<IActionResult> Details(int? id)
         {
 
             //Primeiro testa se o id é null
@@ -81,14 +83,14 @@ namespace SalesWebMvc.Controllers
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
-            var obj = _sellerService.FindById(id.Value); // fazendo busca no banco de dados caso não encontrar vou retornar um not found
+            var obj = await _sellerService.FindByIdAsync(id.Value); // fazendo busca no banco de dados caso não encontrar vou retornar um not found
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
             return View(obj);
         }
-        public IActionResult Edit(int? id)
+        public async Task<IActionResult> Edit(int? id)
         {
             //Testando se o Id existe
             if (id == null)
@@ -96,13 +98,13 @@ namespace SalesWebMvc.Controllers
                 return RedirectToAction(nameof(Error), new { message = "Id not provided" });
             }
             // testar para ver se o Id  existe no banco de dados ou é nullo
-            var obj = _sellerService.FindById(id.Value);
+            var obj = await _sellerService.FindByIdAsync(id.Value);
             if (obj == null)
             {
                 return RedirectToAction(nameof(Error), new { message = "Id not found" });
             }
             //Abrir a tela de edição e povuar a caixa de seleção do departamento
-            List<Department> departments = _departmentService.FindAll();
+            List<Department> departments = await _departmentService.FindAllAsync();
             //Passando os dados para objeto FormViewModel 
             SellerFormViewModel viewModel = new SellerFormViewModel { Seller = obj, Departments = departments };
             return View(viewModel);
@@ -111,11 +113,11 @@ namespace SalesWebMvc.Controllers
         [HttpPost]
         [ValidateAntiForgeryToken]
         //O Id da url que esta chegando tem que ser igual ao do vendedor que estou passando no metodo
-        public IActionResult Edit(int id, Seller seller)
+        public async Task<IActionResult> Edit(int id, Seller seller)
         {
             if (!ModelState.IsValid)//Testa pra ver se o modelo foi validado
             {
-                var departments = _departmentService.FindAll();
+                var departments = await _departmentService.FindAllAsync();
                 var ViewModel = new SellerFormViewModel { Seller = seller, Departments = departments };
                 //Vai retornar pra mesma view enaqunto o usuário não preencher corretamente o formulário
                 return View(ViewModel);
@@ -127,7 +129,7 @@ namespace SalesWebMvc.Controllers
             }
             try
             {
-                _sellerService.Update(seller);
+               await _sellerService.UpdateAsync(seller);
                 // Redirecionar para a pagina Index
                 return RedirectToAction(nameof(Index));
             }
@@ -139,6 +141,7 @@ namespace SalesWebMvc.Controllers
         }
         public IActionResult Error(string message)
         {
+            //Essa ação de erro não prescisa ser assincrona porque ela não tem nenhum acesso a dados
             var viewModel = new ErrorViewModel
             {
                 //O atributo dele vai ser a mensagem que esse metodo vai receber
