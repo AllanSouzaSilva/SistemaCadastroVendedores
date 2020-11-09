@@ -1,0 +1,17 @@
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Threading.Tasks;
+
+namespace SalesWebMvc.Services.Exceptions
+{
+    public class IntegrityException : ApplicationException
+    {
+        //Exeção personalizada de serviços para erros de integridade referencial
+        
+        public IntegrityException( string message) : base(message)
+        {
+
+        }
+    }
+}
