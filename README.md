@@ -30,9 +30,9 @@
 <h4 align="center">
   <p>Asp net web - Home</p>
   
-  <img width="70%" alt="Sitehome" title="Home page" src="https://github.com/AllanSouzaSilva/allan-website/blob/main/video/Homevendedor.mp4" style="max-width:70%;">
-  <p>Login -  Clinte</p>
-  <img width="70%" alt="Sitehome" title="Home page" src="https://github.com/AllanSouzaSilva/allan-website/blob/main/video/Login.mp4" style="max-width:70%;">
+  <img width="70%" alt="Sitehome" title="Home page" src="https://github.com/AllanSouzaSilva/SistemaCadastroVendedores/blob/master/SalesWebMvc/wwwroot/videos/Homevendedor.mp4" style="max-width:70%;">
+  <p>Login -  Cliente</p>
+  <img width="70%" alt="Sitehome" title="Login page" src="https://github.com/AllanSouzaSilva/SistemaCadastroVendedores/blob/master/SalesWebMvc/wwwroot/videos/Login.mp4" style="max-width:70%;">
 </h4>
 
 ---
